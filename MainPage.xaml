@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:MauiSaxonHESchematronValidator.Converters"
+             x:Class="MauiSaxonHESchematronValidator.MainPage"
+             Title="SaxonHE Schxslt Schematron Validator">
+
+    <ContentPage.Resources>
+        <converters:TaskResultConverter x:Key="TaskResultConverter" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Label 
+                Text="{Binding SaxonProductTitle, Mode=OneTime}"
+                FontSize="32"
+                HorizontalOptions="Center" />
+
+            <Editor Placeholder="Enter Schematron schema URI here" Text="{Binding SchemaUri}"/>
+
+            <Editor Placeholder="Enter XML instance URI here" Text="{Binding InstanceUri}"/>
+
+            <Button Text="Validate" Command="{Binding ValidateCommand}" IsEnabled="{Binding ValidateCommand.IsNotRunning, Mode=OneWay}"/>
+
+            <Label Text="{Binding ValidateCommand.ExecutionTask,  Converter={StaticResource TaskResultConverter}, StringFormat='Result: {0}'}"/>
+
+            <ActivityIndicator HorizontalOptions="Center"
+                    IsVisible="{Binding ValidateCommand.IsRunning, Mode=OneWay}"
+                    IsRunning="{Binding ValidateCommand.IsRunning, Mode=OneWay}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
