@@ -22,7 +22,11 @@
 
             <Editor Placeholder="Enter Schematron schema URI here" Text="{Binding SchemaUri}"/>
 
+            <Button x:Name="SelectLocalSchematronBtn" Text="Browse for local schematron file" Clicked="SelectLocalSchematronBtn_ClickedAsync"/>
+
             <Editor Placeholder="Enter XML instance URI here" Text="{Binding InstanceUri}"/>
+
+            <Button x:Name="SelectLocalXmlBtn" Text="Browse for local XML file" Clicked="SelectLocalXmlBtn_ClickedAsync"/>
 
             <Button Text="Validate" Command="{Binding ValidateCommand}" IsEnabled="{Binding ValidateCommand.IsNotRunning, Mode=OneWay}"/>
 

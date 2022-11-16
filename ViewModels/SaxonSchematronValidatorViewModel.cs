@@ -85,10 +85,21 @@ namespace MauiSaxonHESchematronValidator.ViewModels
 
             var schematronInstanceUri = new Uri(schemaUri);
 
-            using (var schematronStream = await httpClient.GetStreamAsync(schematronInstanceUri).ConfigureAwait(false))
+            if (schematronInstanceUri.Scheme == "file")
             {
-                var schxsltXsltCompilerTransformer = SchxsltXsltCompilerExecutable.load30();
-                schxsltXsltCompilerTransformer.transform(schematronStream.AsSource(schemaUri), compiledSchematron);
+                using (var schematronStream = File.OpenRead(schemaUri))
+                {
+                    var schxsltXsltCompilerTransformer = SchxsltXsltCompilerExecutable.load30();
+                    schxsltXsltCompilerTransformer.transform(schematronStream.AsSource(schemaUri), compiledSchematron);
+                }
+            }
+            else
+            {
+                using (var schematronStream = await httpClient.GetStreamAsync(schematronInstanceUri).ConfigureAwait(false))
+                {
+                    var schxsltXsltCompilerTransformer = SchxsltXsltCompilerExecutable.load30();
+                    schxsltXsltCompilerTransformer.transform(schematronStream.AsSource(schemaUri), compiledSchematron);
+                }
             }
 
             var compiledSchematronExecutable = xsltCompiler.compile(compiledSchematron.getXdmNode().asSource());
@@ -99,9 +110,19 @@ namespace MauiSaxonHESchematronValidator.ViewModels
 
             var validationSvrlResult = new XdmDestination();
 
-            using (var xmlSampleStream = await httpClient.GetStreamAsync(xmlInstanceUri))
+            if (xmlInstanceUri.Scheme == "file")
             {
-                schematronValidator.transform(xmlSampleStream.AsSource(instanceUri), validationSvrlResult);
+                using (var xmlSampleStream = File.OpenRead(instanceUri))
+                {
+                    schematronValidator.transform(xmlSampleStream.AsSource(instanceUri), validationSvrlResult);
+                }
+            }
+            else
+            {
+                using (var xmlSampleStream = await httpClient.GetStreamAsync(xmlInstanceUri))
+                {
+                    schematronValidator.transform(xmlSampleStream.AsSource(instanceUri), validationSvrlResult);
+                }
             }
 
             var xpathCompiler = processor.newXPathCompiler();
